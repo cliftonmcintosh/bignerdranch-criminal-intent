@@ -1,7 +1,9 @@
 package com.cliftonmcintosh.criminalintent.app;
 
-import android.support.v7.app.ActionBarActivity;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -12,6 +14,15 @@ public class CrimeActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crime);
+
+        FragmentManager fragmentManager = getFragmentManager();
+        Fragment crimeFragment = fragmentManager.findFragmentById(R.id.crime_fragment_container);
+        if (crimeFragment == null) {
+            crimeFragment = CrimeFragment.newInstance();
+            fragmentManager.beginTransaction()
+                    .add(R.id.crime_fragment_container, crimeFragment)
+                    .commit();
+        }
     }
 
 
