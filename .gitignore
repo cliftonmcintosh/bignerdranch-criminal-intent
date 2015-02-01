@@ -5,3 +5,5 @@
 .DS_Store
 /build
 gradle/
+/.idea/shelf/
+/.navigation
