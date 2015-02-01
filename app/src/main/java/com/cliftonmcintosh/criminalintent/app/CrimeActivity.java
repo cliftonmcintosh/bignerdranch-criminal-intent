@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -14,6 +15,10 @@ public class CrimeActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crime);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.crime_toolbar);
+        toolbar.setTitle(R.string.app_name);
+        setSupportActionBar(toolbar);
 
         FragmentManager fragmentManager = getFragmentManager();
         Fragment crimeFragment = fragmentManager.findFragmentById(R.id.crime_fragment_container);
