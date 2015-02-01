@@ -1,15 +1,16 @@
 package com.cliftonmcintosh.criminalintent.app;
 
 import android.app.Fragment;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
-
 import com.cliftonmcintosh.criminalintent.Crime;
 
 
@@ -22,6 +23,8 @@ import com.cliftonmcintosh.criminalintent.Crime;
 public class CrimeFragment extends Fragment {
     private Crime mCrime;
     private EditText mTitleField;
+    private Button mDateTimeButton;
+    private CheckBox mSolvedCheckBox;
 
     /**
      * Use this factory method to create a new instance of
@@ -69,6 +72,17 @@ public class CrimeFragment extends Fragment {
             }
         });
 
+        mDateTimeButton = (Button) view.findViewById(R.id.crime_date);
+        mDateTimeButton.setText(mCrime.getDateTime().toString("EEE, MMM dd, YYYY HH:mm"));
+        mDateTimeButton.setEnabled(false);
+
+        mSolvedCheckBox = (CheckBox) view.findViewById(R.id.crime_solved);
+        mSolvedCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mCrime.setSolved(isChecked);
+            }
+        });
         return view;
     }
 
