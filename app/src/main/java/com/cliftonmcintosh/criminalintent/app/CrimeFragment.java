@@ -25,6 +25,7 @@ public class CrimeFragment extends Fragment {
     private EditText mTitleField;
     private Button mDateTimeButton;
     private CheckBox mSolvedCheckBox;
+    private CrimeLab lab;
 
     /**
      * Use this factory method to create a new instance of
@@ -48,6 +49,7 @@ public class CrimeFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mCrime = new Crime();
+        lab = CrimeLab.get(getActivity().getApplicationContext());
     }
 
     @Override

@@ -5,8 +5,6 @@ import org.junit.Before;
 
 import static org.junit.Assert.*;
 
-import java.util.UUID;
-
 /**
  * Crime Tester.
  *
@@ -24,11 +22,11 @@ public class CrimeTest {
     }
 
     /**
-     * Method: getId()
+     * Method: getExternalId()
      */
     @Test
-    public void testGetId() throws Exception {
-        UUID id = crime.getId();
+    public void testGetExternalId() throws Exception {
+        String id = crime.getExternalId();
 
         assertNotNull(id);
     }
