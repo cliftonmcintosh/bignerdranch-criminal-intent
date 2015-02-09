@@ -11,7 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.ListView;
+import android.widget.TextView;
 import com.cliftonmcintosh.criminalintent.Crime;
 
 import java.util.ArrayList;
@@ -53,10 +55,7 @@ public class CrimeListFragment extends ListFragment {
         super.onCreate(savedInstanceState);
         getActivity().setTitle(R.string.crimes_title);
         mCrimes = CrimeLab.get(getActivity()).getCrimes();
-        ArrayAdapter<Crime> adapter = new ArrayAdapter<>(
-                getActivity(),
-                android.R.layout.simple_list_item_1,
-                mCrimes);
+        CrimeAdapter adapter = new CrimeAdapter(mCrimes);
         setListAdapter(adapter);
     }
 
@@ -69,7 +68,7 @@ public class CrimeListFragment extends ListFragment {
 
     @Override
     public void onListItemClick(ListView listView, View view, int position, long id) {
-        Crime crime = (Crime) (getListAdapter()).getItem(position);
+        Crime crime = ((CrimeAdapter)getListAdapter()).getItem(position);
         Log.d(TAG, crime.getTitle() + " was clicked");
     }
 
@@ -110,6 +109,32 @@ public class CrimeListFragment extends ListFragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
+    }
+
+    private class CrimeAdapter extends ArrayAdapter<Crime>{
+
+        public CrimeAdapter(ArrayList<Crime> crimes) {
+            super(getActivity(), 0, crimes);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            if (convertView == null) {
+                convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_crime, null);
+            }
+            Crime crime = getItem(position);
+
+            TextView titleTextView = (TextView) convertView.findViewById(R.id.crime_list_item_titleTextView);
+            titleTextView.setText(crime.getTitle());
+
+            TextView dateTextView = (TextView) convertView.findViewById(R.id.crime_list_item_dateTextView);
+            dateTextView.setText(crime.getDateTime().toString("EEEE, MMMM dd, YYYY"));
+
+            CheckBox solvedCheckBox = (CheckBox) convertView.findViewById(R.id.crime_list_item_solvedCheckBox);
+            solvedCheckBox.setChecked(crime.isSolved());
+
+            return convertView;
+        }
     }
 
 }
