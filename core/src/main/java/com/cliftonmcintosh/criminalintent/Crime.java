@@ -32,6 +32,11 @@ public class Crime {
         mSolved = solved;
     }
 
+    @Override
+    public String toString() {
+        return mTitle;
+    }
+
     public long getId() {
         return mId;
     }

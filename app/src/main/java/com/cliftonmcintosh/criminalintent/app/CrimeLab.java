@@ -1,4 +1,5 @@
 package com.cliftonmcintosh.criminalintent.app;
+
 import static com.cliftonmcintosh.criminalintent.database.CrimeContract.CrimeEntry.TABLE_NAME;
 import static com.cliftonmcintosh.criminalintent.database.CrimeContract.CrimeEntry._ID;
 import static com.cliftonmcintosh.criminalintent.database.CrimeContract.CrimeEntry.COLUMN_TITLE;
@@ -14,6 +15,8 @@ import android.database.sqlite.SQLiteDatabase;
 import com.cliftonmcintosh.criminalintent.Crime;
 import com.cliftonmcintosh.criminalintent.database.CrimeDatabaseHelper;
 import org.joda.time.LocalDateTime;
+
+import java.util.ArrayList;
 
 /**
  * Created by cmcintosh on 2/3/15.
@@ -54,6 +57,27 @@ public class CrimeLab {
         return savedCrime;
     }
 
+    public ArrayList<Crime> getCrimes() {
+        ArrayList<Crime> crimes = new ArrayList<>();
+        SQLiteDatabase db = mDatabaseHelper.getReadableDatabase();
+        Cursor cursor = db.query(true,
+                TABLE_NAME,
+                PROJECTION,
+                null,
+                null,
+                null,
+                null,
+                COLUMN_DATE_TIME + " DESC",
+                null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+            do {
+                crimes.add(createCrimeFromRow(cursor));
+            } while (cursor.moveToNext());
+        }
+        return crimes;
+    }
+
     private Crime insert(Crime crime) {
 
         SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
@@ -65,7 +89,7 @@ public class CrimeLab {
     private Crime update(Crime crime) {
         SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
         ContentValues values = createContentValuesFromCrime(crime);
-        db.update(TABLE_NAME, values, ID_SELECTION, new String[] {String.valueOf(crime.getId())});
+        db.update(TABLE_NAME, values, ID_SELECTION, new String[]{String.valueOf(crime.getId())});
 
         return crime;
     }
@@ -91,15 +115,23 @@ public class CrimeLab {
                 new String[]{String.valueOf(id)}, null, null, null, null);
         if (cursor != null) {
             cursor.moveToFirst();
-            crime = new Crime(
-                    Long.valueOf(cursor.getString(0)),
-                    cursor.getString(1),
-                    cursor.getString(2),
-                    cursor.getString(3),
-                    new LocalDateTime(Long.valueOf(cursor.getString(4))),
-                    (cursor.getInt(5) > 0)
-            );
+            crime = createCrimeFromRow(cursor);
         }
         return crime;
+    }
+
+    /**
+     * @param cursor cannot be null
+     * @return a Crime
+     */
+    private Crime createCrimeFromRow(Cursor cursor) {
+        return new Crime(
+                Long.valueOf(cursor.getString(0)),
+                cursor.getString(1),
+                cursor.getString(2),
+                cursor.getString(3),
+                new LocalDateTime(Long.valueOf(cursor.getString(4))),
+                (cursor.getInt(5) > 0)
+        );
     }
 }
