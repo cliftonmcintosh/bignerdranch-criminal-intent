@@ -2,6 +2,7 @@ package com.cliftonmcintosh.criminalintent.app;
 
 import android.app.Activity;
 import android.app.ListFragment;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -70,6 +71,10 @@ public class CrimeListFragment extends ListFragment {
     public void onListItemClick(ListView listView, View view, int position, long id) {
         Crime crime = ((CrimeAdapter)getListAdapter()).getItem(position);
         Log.d(TAG, crime.getTitle() + " was clicked");
+
+        Intent intent = new Intent(getActivity(), CrimeActivity.class);
+        intent.putExtra(CrimeFragment.EXTRA_CRIME_ID, crime.getId());
+        startActivity(intent);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -131,6 +136,9 @@ public class CrimeListFragment extends ListFragment {
             dateTextView.setText(crime.getDateTime().toString("EEEE, MMMM dd, YYYY"));
 
             CheckBox solvedCheckBox = (CheckBox) convertView.findViewById(R.id.crime_list_item_solvedCheckBox);
+            if (crime.isSolved()) {
+                Log.d(TAG, "crime " + crime.getTitle() + " is solved");
+            }
             solvedCheckBox.setChecked(crime.isSolved());
 
             return convertView;

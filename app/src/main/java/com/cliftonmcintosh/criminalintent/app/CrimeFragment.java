@@ -21,22 +21,27 @@ import com.cliftonmcintosh.criminalintent.Crime;
  * create an instance of this fragment.
  */
 public class CrimeFragment extends Fragment {
+    public static final String EXTRA_CRIME_ID = "com.cliftonmcintosh.criminalintent.app.crime_id";
+
+    private static final String TAG = "CrimeFragment";
+
     private Crime mCrime;
     private EditText mTitleField;
     private Button mDateTimeButton;
     private CheckBox mSolvedCheckBox;
-    private CrimeLab lab;
+    private CrimeLab mCrimeLab;
 
     /**
      * Use this factory method to create a new instance of
      * this fragment.
      *
+     * @param crimeId the id of the crime for this fragment
      * @return A new instance of fragment CrimeFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static CrimeFragment newInstance() {
+    public static CrimeFragment newInstance(Long crimeId) {
         CrimeFragment fragment = new CrimeFragment();
         Bundle args = new Bundle();
+        args.putSerializable(EXTRA_CRIME_ID, crimeId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -48,8 +53,10 @@ public class CrimeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mCrime = new Crime();
-        lab = CrimeLab.get(getActivity().getApplicationContext());
+        Long crimeId = (Long) getArguments().getSerializable(EXTRA_CRIME_ID);
+
+        mCrimeLab = CrimeLab.get(getActivity().getApplicationContext());
+        mCrime = mCrimeLab.getCrime(crimeId);
     }
 
     @Override
@@ -57,6 +64,10 @@ public class CrimeFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_crime, container, false);
         mTitleField = (EditText) view.findViewById(R.id.crime_title);
+        String title = mCrime.getTitle();
+        if (title != null) {
+            mTitleField.setText(title);
+        }
         mTitleField.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -70,7 +81,7 @@ public class CrimeFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                // do nothing
+                mCrime = mCrimeLab.saveCrime(mCrime);
             }
         });
 
@@ -79,10 +90,12 @@ public class CrimeFragment extends Fragment {
         mDateTimeButton.setEnabled(false);
 
         mSolvedCheckBox = (CheckBox) view.findViewById(R.id.crime_solved);
+        mSolvedCheckBox.setChecked(mCrime.isSolved());
         mSolvedCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 mCrime.setSolved(isChecked);
+                mCrime = mCrimeLab.saveCrime(mCrime);
             }
         });
         return view;

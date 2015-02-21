@@ -78,6 +78,27 @@ public class CrimeLab {
         return crimes;
     }
 
+    public Crime getCrime(Long id) {
+        Crime crime = null;
+
+        SQLiteDatabase db = mDatabaseHelper.getReadableDatabase();
+        Cursor cursor = db.query(true,
+                TABLE_NAME,
+                PROJECTION,
+                _ID + "=?",
+                new String[] {String.valueOf(id)},
+                null,
+                null,
+                null,
+                null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+            crime = createCrimeFromRow(cursor);
+        }
+
+        return crime;
+    }
+
     private Crime insert(Crime crime) {
 
         SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
@@ -86,7 +107,7 @@ public class CrimeLab {
         return getCrimeById(rowId);
     }
 
-    private Crime update(Crime crime) {
+    public Crime update(Crime crime) {
         SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
         ContentValues values = createContentValuesFromCrime(crime);
         db.update(TABLE_NAME, values, ID_SELECTION, new String[]{String.valueOf(crime.getId())});
