@@ -68,6 +68,12 @@ public class CrimeListFragment extends ListFragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        ((CrimeAdapter)getListAdapter()).notifyDataSetChanged();
+    }
+
+    @Override
     public void onListItemClick(ListView listView, View view, int position, long id) {
         Crime crime = ((CrimeAdapter)getListAdapter()).getItem(position);
         Log.d(TAG, crime.getTitle() + " was clicked");
